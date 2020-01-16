@@ -16,8 +16,8 @@ kind: Namespace
 metadata:     
   name: dev   
 EOF     
-kubectl create -f ./dev.yaml
 ```
+> kubectl create -f ./dev.yaml      
 
 注意：命名空间名称满足正则表达式[a-z0-9]([-a-z0-9]*[a-z0-9])?,最大长度为63位
 

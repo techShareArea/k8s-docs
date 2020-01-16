@@ -84,4 +84,4 @@ selector:
 > kubectl label node master/node ecaicn.com/persistent-env=dev
 
 删除label标签
-> kubectl label node master/node 
+> kubectl label node master/node ecaicn.com/persistent-env- #-表示     
