@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+  namespace: dev
+  labels:
+    app: redis
+spec:
+  nodeSelector:
+    ecaicn.com/persistent-env: dev
+  tolerations:  # 容许污染度，详见:https://kubernetes.io/docs/concepts/configuration/taint-and-toleration
+  - operator: "Exists"  # 容许污染一切
+  containers:
+  - name: redis
+    image: redis:5
+    ports:
+    - containerPort: 6379
+    volumeMounts:
+    - name: timezone
+      mountPath: /etc/timezone
+      subPath: timezone
+      readOnly: yes
+    - name: localtime
+      mountPath: /etc/localtime
+      readOnly: yes
+    - mountPath: /data
+      name: redis-data
+  volumes:
+  - name: redis-data
+    hostPath:
+      path: /data/volumes/redis
+  - name: timezone
+    configMap:
+      name: timezone
+  - name: localtime
+    hostPath:
+      path: /usr/share/zoneinfo/Asia/Shanghai
