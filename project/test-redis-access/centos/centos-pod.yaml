@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: centos
+  namespace: dev
+  labels:
+    app: centos
+spec:
+  nodeSelector:
+    ecaicn.com/persistent-env: dev
+  tolerations:
+  - operator: "Exists"
+  containers:
+  - name: centos
+    image: centos
+    volumeMounts:
+    - name: timezone
+      mountPath: /etc/timezone
+      subPath: timezone
+      readOnly: yes
+    - name: localtime
+      mountPath: /etc/localtime
+      readOnly: yes
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do echo hello; sleep 10;done"]
+  volumes:
+  - name: timezone
+    configMap:
+      name: timezone
+  - name: localtime
+    hostPath:
+      path: /usr/share/zoneinfo/Asia/Shanghai
+  restartPolicy: Always
