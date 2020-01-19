@@ -1,0 +1,53 @@
+management:
+  server:
+    port: 8081
+
+spring:
+  redis:
+    host: redis.dev.svc.cluster.local:6379
+
+  rabbitmq:
+    addresses: mq.dev.svc.cluster.local:5672
+    username: xxx
+    password: xxx
+
+  datasource:
+    url: jdbc:mysql://mysql.dev.svc.cluster.local:3306/xxx?useUnicode=true&useSSL=false&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    username: xxx
+    password: xxx
+
+org:
+  quartz:
+    dataSource:
+      myDS:
+        URL: jdbc:mysql://mysql.dev.svc.cluster.local:3306/xxx
+
+logging:
+  config: config/logback.xml
+
+server:
+  port: 8080
+  tomcat:
+    accesslog:
+      enabled: true
+      buffered: true
+      directory: /app/logs/access-log
+      pattern: combined
+
+app:
+  gateway-host: dev-xxx-api.ecaicn.com
+  security:
+    crypto:
+      key: xxx
+  aliyun:
+    sms:
+      access-key-id: xxx
+      access-key-secret: xxx
+  oss:
+    access-key-id: xxx
+    access-key-secret: xxx
+  auth:
+    user:
+      session:
+        single-session: false
+        timeout: 86400

@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+    name: mq
+    namespace: dev
+spec:
+    rules:
+    - host: dev-xxx.ecaicn.com
+      http:
+        paths:
+        - backend:
+             serviceName: mq
+             servicePort: 15672

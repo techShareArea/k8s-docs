@@ -32,5 +32,32 @@ or
 3. PersistentVolumes是不属于任何namespace的，但PersistentVolumeClaim是属于某个特定namespace的；
 4. Events是否属于namespace取决于产生events的对象。
 
-#### 查看ns/namespace
+##### 三.查看ns/namespace
 > kubectl get ns/namespace
+
+#### 示例
+```
+cat > frps/frps-pod.yaml <<-EOF 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frps
+  namespace: dev     # 使用dev的命名空间 
+  labels:
+    app: frps
+spec:
+  nodeSelector:
+    ecaicn.com/persistent-env: dev
+  imagePullSecrets:
+  - name: ali-shenzhen-registry-secret     
+  containers:
+  - name: frps
+    image: registry-vpc.cn-shenzhen.aliyuncs.com/cj-cloud/cjom-frps:latest
+    env: 
+    - name: FRPS_TOKEN
+      value: Vptivqlefdtxmy4gvNw2  
+    ports:
+    - containerPort: 7000
+      containerPort: 7500
+EOF
+```

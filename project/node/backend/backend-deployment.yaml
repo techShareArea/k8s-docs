@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: xxx
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app: xxx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+          app: xxx
+    spec:
+      imagePullSecrets:
+      - name: ali-shenzhen-registry-secret
+      containers:
+        - name: xxx
+          image: registry-vpc.cn-shenzhen.aliyuncs.com/cj-cloud/xxx:dev-latest
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: dev
+          ports:
+           - containerPort: 8080
+          volumeMounts:
+           - name: timezone
+             mountPath: /etc/timezone
+             subPath: timezone
+             readOnly: yes
+           - name: localtime
+             mountPath: /etc/localtime
+             readOnly: yes
+           - name: xxx-conf
+             mountPath: /app/config/
+             readOnly: true
+      volumes:
+        - name: timezone
+          configMap:
+            name: timezone
+        - name: localtime
+          hostPath:
+             path: /usr/share/zoneinfo/Asia/Shanghai
+        - name: xxx-conf
+          configMap:
+            name: xxx-conf

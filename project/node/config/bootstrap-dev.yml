@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    zookeeper:
+      connect-string: zk.dev.svc.cluster.local:2181
+      discovery:
+        instance-host: ${spring.cloud.client.ip-address}

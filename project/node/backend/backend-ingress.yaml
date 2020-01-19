@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+    name: xxx
+    namespace: dev
+spec:
+    rules:
+    - host: dev-xxx-api.ecaicn.com
+      http:
+        paths:
+        - backend:
+             serviceName: xxx
+             servicePort: 8080
+    tls:
+      - hosts:
+        - "*.ecaicn.com"
+        secretName: tls-ecaicn-com

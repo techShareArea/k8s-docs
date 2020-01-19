@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: xxx
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app: xxx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+          app: xxx
+    spec:
+      imagePullSecrets:
+      - name: ali-shenzhen-registry-secret
+      containers:
+        - name: xxx
+          image: registry-vpc.cn-shenzhen.aliyuncs.com/cj-cloud/xxx-front:dev-latest
+          ports:
+           - containerPort: 80
+          volumeMounts:
+           - name: timezone
+             mountPath: /etc/timezone
+             subPath: timezone
+             readOnly: yes
+           - name: localtime
+             mountPath: /etc/localtime
+             readOnly: yes
+           - name: config
+             mountPath: /usr/local/apache2/htdocs/config/site.config.js
+             subPath: site.config.js
+             readOnly: yes
+      volumes:
+        - name: timezone
+          configMap:
+            name: timezone
+        - name: localtime
+          hostPath:
+             path: /usr/share/zoneinfo/Asia/Shanghai
+        - name: config
+          configMap:
+             name: xxx

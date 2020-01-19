@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: zk
+  namespace: dev
+  labels:
+    app: zk
+spec:
+  nodeSelector:
+    ecaicn.com/persistent-env: dev
+  containers:
+  - name: zk
+    image: docker.io/zookeeper:3.4.10
+    ports:
+    - containerPort: 2181
+    volumeMounts:
+    - name: timezone
+      mountPath: /etc/timezone
+      subPath: timezone
+      readOnly: yes
+    - name: localtime
+      mountPath: /etc/localtime
+      readOnly: yes
+    - mountPath: /data
+      name: zk-data
+  volumes:
+  - name: zk-data
+    hostPath:
+      path: /data/volumes/zookeeper/data
+  - name: timezone
+    configMap:
+      name: timezone
+  - name: localtime
+    hostPath:
+      path: /usr/share/zoneinfo/Asia/Shanghai

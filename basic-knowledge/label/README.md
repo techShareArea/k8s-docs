@@ -85,3 +85,30 @@ selector:
 
 删除label标签
 > kubectl label node master/node ecaicn.com/persistent-env- #-表示     
+
+#### 示例
+```
+cat > frps/frps-pod.yaml <<-EOF 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frps
+  namespace: dev     
+  labels:
+    app: frps
+spec:
+  nodeSelector:
+    ecaicn.com/persistent-env: dev      # 使用dev的label标签 
+  imagePullSecrets:
+  - name: ali-shenzhen-registry-secret     
+  containers:
+  - name: frps
+    image: registry-vpc.cn-shenzhen.aliyuncs.com/cj-cloud/cjom-frps:latest
+    env: 
+    - name: FRPS_TOKEN
+      value: Vptivqlefdtxmy4gvNw2  
+    ports:
+    - containerPort: 7000
+      containerPort: 7500
+EOF
+```

@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+    name: xxx
+    namespace: dev
+    annotations:
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+    rules:
+    - host: dev-xxx.ecaicn.com
+      http:
+        paths:
+        - backend:
+             serviceName: xxx
+             servicePort: 80
+    tls:
+      - hosts:
+        - "*.ecaicn.com"
+        secretName: tls-ecaicn-com
