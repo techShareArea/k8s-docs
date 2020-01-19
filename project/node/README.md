@@ -61,5 +61,3 @@
 #### 部署rabbitmq service lb domain
 > kubectl apply -f ../rabbitmq/rabbitmq-svc-lb-domain.yaml
 
-
-
