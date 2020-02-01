@@ -34,7 +34,7 @@ systemctl disable firewalld
 ```
 
 ##### 增加hosts文件内容
-> echo "192.168.3.266    k8s" >> /etc/hosts
+> echo "172.18.107.141 kubeadm" >> /etc/hosts
 
 ##### 将桥接的ipv4流量传递到iptables的链
 ```
@@ -49,9 +49,12 @@ sysctl --system
 ```
 yum install -y yum-utils device-mapper-persistent-data lvm2
 yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+yum -y install docker-ce docker-ce-cli containerd.io
 systemctl enable docker
 systemctl start docker
 ```
+
+注:点击https://kubernetes.io查看k8s的稳定版本
 
 ##### 使用aliyun源安装kubectl,kubeadm,kubelet
 ```
@@ -71,15 +74,34 @@ systemctl enable kubelet && systemctl start kubelet
 
 ##### 部署k8s master节点
 ```
-kubeadm init --apiserver-advertise-address=192.168.3.266 --image-repository registry.aliyuncs.com/google_containers --kubernetes-version v1.17.0 --service-cidr=10.1.0.0/16 --pod-network-cidr=10.244.0.0/16
+kubeadm init \
+--apiserver-advertise-address=172.18.107.141 \
+--image-repository registry.aliyuncs.com/google_containers \
+--kubernetes-version v1.17.0 \
+--service-cidr=10.1.0.0/16 \ 
+--pod-network-cidr=10.244.0.0/16
+
+生效配置
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
+注:查看部署状态
+> kubectl get pods -n kube-system       
+如果coredns处于pending状态，则需要部署网络插件     
+使用命令:journalctl -f -u kubelet.service查看报错信息      
 
+##### 安装Pod网络插件(CNI)
+使用flannel网络
+> kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml   
+or      
+> kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/a70459be0084506e4ec919aa1c114638878db11b/Documentation/kube-flannel.yml
 
+##### 添加节点信息
+> kubeadm join 172.18.107.141:6443 --token daobz3.w11svvzmnkweevqe \
+    --discovery-token-ca-cert-hash sha256:cc2fe3d396d2ee62fc35b402bb82e91503eb232cd4d004db      
 
-
-
-注:点击https://kubernetes.io查看k8s的稳定版本
-
+##### 测试k8s集群
 
 
