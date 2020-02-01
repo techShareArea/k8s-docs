@@ -34,12 +34,12 @@ items:
           - list
           - watch
       - apiGroups:
-        - ''
+          - ''
         resources:
-        - nodes/status
+          - nodes/status
         verbs:
-        - patch
-        - update
+          - patch
+          - update
   - apiVersion: rbac.authorization.k8s.io/v1beta1
     kind: ClusterRoleBinding
     metadata:
@@ -100,7 +100,6 @@ items:
         name: weave-net
       namespace: kube-system
     spec:
-      # Wait 5 seconds to let pod connect before rolling next pod
       minReadySeconds: 5
       template:
         metadata:
