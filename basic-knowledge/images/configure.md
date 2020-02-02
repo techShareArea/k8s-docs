@@ -68,20 +68,22 @@ EOF
 yum -y install epel-release
 yum clean all
 yum makecache
-yum -y install kubelet-1.17.0 kubeadm-1.17.0 kubectl-1.17.0 kubernetes-cni-1.17.0
+yum -y install kubelet-1.14.0 kubeadm-1.14.0 kubectl-1.14.0 kubernetes-cni
 systemctl enable kubelet && systemctl start kubelet
 ```
 
 ##### 部署k8s master节点
 ```
 kubeadm init \
---apiserver-advertise-address=172.18.107.141 \
+--apiserver-advertise-address 172.18.107.140 \
 --image-repository registry.aliyuncs.com/google_containers \
---kubernetes-version v1.17.0 \
---service-cidr=10.1.0.0/16 \ 
---pod-network-cidr=10.244.0.0/16
+--kubernetes-version v1.14.0 \
+--service-cidr 10.1.0.0/16 \
+--pod-network-cidr 10.244.0.0/16
+```
 
 生效配置
+```
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
@@ -99,9 +101,186 @@ or
 > kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/a70459be0084506e4ec919aa1c114638878db11b/Documentation/kube-flannel.yml
 
 ##### 添加节点信息
-> kubeadm join 172.18.107.141:6443 --token daobz3.w11svvzmnkweevqe \
+> kubeadm join 172.18.107.140:6443 --token daobz3.w11svvzmnkweevqe \
     --discovery-token-ca-cert-hash sha256:cc2fe3d396d2ee62fc35b402bb82e91503eb232cd4d004db      
 
 ##### 测试k8s集群
+以nginx为例
+> kubectl create deployment nginx --image=nginx     
+> kubectl expose deployment nginx --port=80 --type=NodePort
+> kubectl get pods,svc      
+```
+NAME                             READY   STATUS             RESTARTS   AGE
+pod/busybox-5bdd4b9488-52lfc     0/1     CrashLoopBackOff   13         16h
+pod/nginx-65f88748fd-822lh       1/1     Running            0          43m
 
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        2d4h
+service/nginx        NodePort    10.100.100.25   <none>        80:32534/TCP   13m
+```
+##### 访问web页面
+命令行:
+> curl localhost:30031
+
+浏览器访问:
+http://47.113.103.89:30031
+
+##### 扩容
+提供nginx的并发性
+> kubectl scale deployment nginx --replicas=3
+
+##### 部署dashboard
+```
+cat > kube-dashboard.yaml <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard-certs
+  namespace: kube-system
+type: Opaque
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kube-system
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: kubernetes-dashboard-minimal
+  namespace: kube-system
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["kubernetes-dashboard-key-holder", "kubernetes-dashboard-certs"]
+  verbs: ["get", "update", "delete"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  resourceNames: ["kubernetes-dashboard-settings"]
+  verbs: ["get", "update"]
+- apiGroups: [""]
+  resources: ["services"]
+  resourceNames: ["heapster"]
+  verbs: ["proxy"]
+- apiGroups: [""]
+  resources: ["services/proxy"]
+  resourceNames: ["heapster", "http:heapster:", "https:heapster:"]
+  verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kubernetes-dashboard-minimal
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kubernetes-dashboard-minimal
+subjects:
+- kind: ServiceAccount
+  name: kubernetes-dashboard
+  namespace: kube-system
+---
+kind: Deployment
+apiVersion: apps/v1beta2
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kube-system
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      k8s-app: kubernetes-dashboard
+  template:
+    metadata:
+      labels:
+        k8s-app: kubernetes-dashboard
+    spec:
+      containers:
+      - name: kubernetes-dashboard
+#        image: k8s.gcr.io/kubernetes-dashboard-amd64:v1.10.0
+        image: lizhenliang/kubernetes-dashboard-amd64:v1.10.1
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        args:
+          - --auto-generate-certificates
+        volumeMounts:
+        - name: kubernetes-dashboard-certs
+          mountPath: /certs
+        - mountPath: /tmp
+          name: tmp-volume
+        livenessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /
+            port: 8443
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
+      volumes:
+      - name: kubernetes-dashboard-certs
+        secret:
+          secretName: kubernetes-dashboard-certs
+      - name: tmp-volume
+        emptyDir: {}
+      serviceAccountName: kubernetes-dashboard
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kube-system
+spec:
+  type: NodePort
+  ports:
+    - port: 443
+      targetPort: 8443
+      nodePort: 30001
+  selector:
+    k8s-app: kubernetes-dashboard
+EOF
+kubectl apply -f kube-dashboard.yaml
+```
+注:NodePort为外部访问，否则，只能在集群内部访问。
+
+web访问:
+> https://https://47.113.103.89:30001
+
+创建service account并绑定默认cluster-admin管理员集群角色
+```
+kubectl create serviceaccount dashboard-admin -n kube-system    #面向于应用访问API,dashboard-admin为管理员
+Kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kube-system:dashboard-admin
+kubectl describe secrets -n kube-system $(kubectl -n kube-system get secret | awk '/dashboard-admin/{print $1}')    #获取token值
+```
+
+##### 补充
+使用kubeadm 搭建k8s+flannel集群：
+> https://www.jianshu.com/p/351acb6811fd        
+
+k8s常见报错解决：
+> https://cloud.tencent.com/developer/article/1461571           
+> https://yq.aliyun.com/articles/679699     
+> https://www.cnblogs.com/only-me/p/10219903.html         
+
+kubernetes中网络报错问题:
+> http://www.mamicode.com/info-detail-2315259.html      
 

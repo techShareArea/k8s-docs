@@ -42,7 +42,7 @@ yum makecache
 
 安装Kubeadm
 ```
-yum -y install kubelet-1.14.0 kubeadm-1.14.0 kubectl-1.14.0 kubernetes-cni-1.14.0
+yum -y install kubelet-1.14.0 kubeadm-1.14.0 kubectl-1.14.0 kubernetes-cni
 systemctl enable kubelet && systemctl start kubelet
 ```
 注:请务必安装指定版本1.14.0，后面的镜像基于版本1.14.0；如若安装最新版本的k8s，则执行命令:yum -y install kubelet kubeadm kubectl kubernetes-cni
