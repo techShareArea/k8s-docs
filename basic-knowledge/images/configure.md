@@ -275,7 +275,7 @@ kubectl describe secrets -n kube-system $(kubectl -n kube-system get secret | aw
 ##### 补充
 使用kubeadm 搭建k8s+flannel集群：
 > https://www.jianshu.com/p/351acb6811fd        
-
+ 
 k8s常见报错解决：
 > https://cloud.tencent.com/developer/article/1461571           
 > https://yq.aliyun.com/articles/679699     
