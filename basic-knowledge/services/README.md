@@ -2,6 +2,10 @@
 Kubernetes Service定义了这样一种抽象：逻辑上的一组Pod，一种可以访问它们的策略--通常称为微服务。这一组Pod能够被Service访问到，通常是通过selector（查看下面了解，为什么你可能需要没有selector的Service）实现的。
 举个例子，考虑一个图片处理backend，它运行了3个副本。这些副本是可互换的--frontend不需要关心它们调用了哪个backend副本。然而组成这一组backend程序的Pod实际上可能会发生变化，frontend客户端不应该也没必要知道，而且也不需要跟踪这一组backend的状态。Service定义的抽象能够解耦这种关联。
 
+#### 作用
+1. 防止Pod失联
+2. 定义一组访问pod的策略
+
 #### 定义 Service
 一个Service在Kubernetes中是一个REST对象，和Pod类似。像所有的REST对象一样，Service定义可以基于POST方式，请求API server创建新的实例。
 

@@ -1,6 +1,9 @@
 #### 概念
 Label是用于标记Pod,Node,Namespace或其它资源对象的键值对，主要用于再查询或选择时对资源进行条件过滤。Label机制也是K8S中组织ReplicaSet,DaemonSet,Job和Service等概念的基础，它被用于在所有同一组ReplicaSet或DaemonSet以及哪些Pod提供了同一个Service对象的服务
 
+#### 作用
+标签，附加到某个资源上，用于关联对象，查询和筛选
+
 #### 语法
 > "labels": {   
 >  "key1" : "value1",   
