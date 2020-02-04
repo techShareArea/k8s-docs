@@ -134,6 +134,10 @@ EOF
 kubectl apply -f java-demo-svc.yaml
 ```
 
+注:生成svc模板
+> kubectl expose deployment java-demo --port=80 --target-port=8080 --type=NodePort --dry-run=true -o yaml > java-demo-svc.yaml       
+
+
 查看部署的pod与svc
 > kubectl get pods,svc -o wide  
 
