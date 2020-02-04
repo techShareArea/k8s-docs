@@ -160,3 +160,13 @@ service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        86
 处理方法:          
 > echo "52.22.201.61 registry-1.docker.io" >> /etc/hosts        
 
+##### 2.接触污染度
+> kubectl describe pod myapp        
+```
+Events:
+  Type     Reason            Age                From               Message
+  ----     ------            ----               ----               -------
+  Warning  FailedScheduling  28s (x2 over 28s)  default-scheduler  0/1 nodes are available: 1 node(s) had taints that the pod didn't tolerate.
+```
+> kubectl taint nodes --all node-role.kubernetes.io/master-     
+
