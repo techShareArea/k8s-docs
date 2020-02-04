@@ -125,7 +125,7 @@ service/nginx        NodePort    10.100.100.25   <none>        80:32534/TCP   13
 浏览器访问:
 http://47.113.103.89:30031
 
-##### 扩容
+##### 扩容/缩容
 提供nginx的并发性
 > kubectl scale deployment nginx --replicas=3
 
