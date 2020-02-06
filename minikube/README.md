@@ -144,3 +144,5 @@ EOF
 执行yaml文件
 > kubectl apply -f ./dashboard.yaml      
 
+#### 补充
+利用virtualbox部署方式:https://www.cnblogs.com/lyxb/p/11244059.html
