@@ -145,4 +145,8 @@ EOF
 > kubectl apply -f ./dashboard.yaml      
 
 #### 补充
-利用virtualbox部署方式:https://www.cnblogs.com/lyxb/p/11244059.html
+利用virtualbox部署方式:
+https://www.cnblogs.com/lyxb/p/11244059.html
+
+minikube 运行 dashboard，并对外暴露访问地址:
+https://www.jianshu.com/p/ef020fa8ca97
