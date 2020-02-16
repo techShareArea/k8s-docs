@@ -273,6 +273,9 @@ kubectl describe secrets -n kube-system $(kubectl -n kube-system get secret | aw
 ```
 
 ##### 补充
+Kubernetes Dashboard部署:
+> https://www.jianshu.com/p/be2a12a8bc0b        
+
 使用kubeadm 搭建k8s+flannel集群：
 > https://www.jianshu.com/p/351acb6811fd        
  
