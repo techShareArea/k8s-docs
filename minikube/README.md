@@ -147,6 +147,7 @@ EOF
 #### 补充
 利用virtualbox部署方式:
 https://www.cnblogs.com/lyxb/p/11244059.html
+https://blog.csdn.net/hjxzb/article/details/82725986
 
 minikube 运行 dashboard，并对外暴露访问地址:
 https://www.jianshu.com/p/ef020fa8ca97
