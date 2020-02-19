@@ -1,0 +1,75 @@
+### 证书管理
+k8s于生产环节运行时，建议运行https的安全环境下，k8s证书可分为以下三大类
+1. root CA  
+1.1 apiserver: apiserver自己的证书       
+1.2 apiserver-kubelet-client: kubelet客户端连接apiserver时的客户端证书
+
+2. etcd CA
+2.1 etcd-server: etcd服务端证书
+2.2 etcd-peer: etcd对等证书，用于etcd集群间https通信
+2.3 etcd-healthcheck: etcd健康检查的客户端证书
+2.4 apiserver-etcd-client: apiserver连接etcd的客户端证书
+
+3. front-proxy CA
+3.1 front-proxyserver-client: apiserver(聚合器aggregator)于前端的客户端证书
+注:
+```
+1. k8s集群证书默认有效期是90天，有2个办法去调整(修改go源文件或者证书签名请求生成时声明)
+2. 证书过期时间，在/etc/kubernetes/pki目录下，使用以下命令进行查看
+openssl x509 -in front-proxy-client.crt -noout -text | grep not
+openssl x509 -in apiserver.crt -noout -text | grep not 
+```
+
+### api资源模型
+restfulapi的核心组件是资源(resource),不用类别的事物会被抽象为不同类型(type)的资源
+
+k8s中的资源也类似于对象式编程语言中的类(class),但它仅支持有限的方法，而且通常是标准的http方法
+> eg: get,put,post,delete       
+
+kubelet相关使用到的命令:
+> kubelet get nodes     
+> kubelet delete node
+
+Ⅰ.为了便于独立进行版本演进，k8s将api划分为'api群组'的逻辑组合，每个群组的rest路径为'/apis/$group_name/$version'
+> eg: /apis/apps/v1 
+
+Ⅱ.核心群组core使用简化的rest路径/api/v1
+
+Ⅲ.每个群组可同时存在多个不同级别的版本，主要包括alpha,beta和stable等，使用的级别标识如:v1alpha1,v1beta2和v1等。
+你可以通过api-server命令查询当前集群所支持的api版本
+> kubectl api-versions  
+
+### api资源类型
+如图api资源类型所示，k8s系统把管理的绝大多数都抽象成了资源，它们分别代表着不同的事物类型，例如:node,service,pod,contorller等
+> 1.每种类型均可通过"属性赋值"进行实例化，从而构建出对象(object);        
+> 2.对象主要用于描述要在集群中运行的应用程序(pod)，以及应用程序相关的控制(controller),配置(configmap和secret),服务暴露(service,ingress),存储(volume)等;        
+> 3.用户使用这些对象来规划，部署，配置，维护和监控应用程序并记录运行日志；     
+> 4.每种类型的资源对象都支持相应的一组方法(管理操作)，它们可用标准的http verb进行表示，eg:get,put,delete,post等     
+
+### 查看集群资源列表
+> kubectl api-resources     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
