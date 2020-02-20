@@ -257,21 +257,86 @@ EOF
 mkdir: can't create directory 'haha': Permission denied
 ```
 
+### pod资源配额
+资源配额的配置文档查询帮助命令:
+> kubectl explain pod.spec.containers.resources     
 
+参数说明:
+```
+limits:
+    上限额度，最多配置的资源量
+requests:
+    下限要求，低于下限，pod会启动失败
+```    
 
+互联网中经常会出现OOM内存溢出的情况，在k8s中往往是以下两点问题引起:
+> 1.节点内存太少；
+> 2.limits限制的太小
 
+示例:
+```
+cat > pod-limits.yaml <<EOF 
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: pod-limits
+  name: pod-limits
+spec:
+  containers:
+  - name: pod-limits
+    image: registry.cn-hangzhou.aliyuncs.com/aaron89/stress-ng
+    command:
+      - /usr/bin/stress-ng
+      - -c 1
+      - -m 1
+      - --metrics-brief
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "200m"
+      limits:
+        memory: "512Mi"
+        cpu: "400m"
+EOF
+```
 
+### pod服务质量类别(QoS Class)
+k8s语境中会根据用户是否配置了pod资源配额来分别定义对应pod资源的重要程度，有如下三类:
+1. guaranteed: 必须保证，requests和limits字段都有设置，最高优先级；
+2. burstable: 尽量满足，requests或limits字段有一个设置了，中等优先级；
+3. besteffort: 尽最大努力，未设置requests或limits字段属性的pod资源，优先级最低
 
+> Qos优先级定义的引入是十分有用的，当我们计算资源变动且出现不足情况的时候，就需要踢出pod资源，k8s就会先下线besteffort级别的资源，从而保证核心业务(guaranteed级别)的稳定性
 
+### Pod中断预算
+pdb(PodDisruptionBudget)中断预算由k8s1.4版本引入，用于为那些资源的终端做好预算方案
+限制可自愿终端的最大Pod副本书或确保最少可用的Pod副本书，以确保服务的高可用性
 
+Ⅰ.终端预算查询
+> kubectl get pdb
 
+Ⅱ.示例
+```
+cat > pod-pdb.yaml <<EOF 
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: my-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+    test: pod-limits
+EOF
+```
 
+中断预算细分为以下两大类:
+Ⅰ.非资源终端
+> 由不可控的外界因素所导致的Pod终端推出操作，例如:硬件或系统故障，网络故障，节点故障等
 
-
-
-
-
-
+Ⅱ.资源中断
+> 由用户特地执行的管理操作导致的Pod中断，例如:排空节点，人为删除Pod对象等
 
 
 
