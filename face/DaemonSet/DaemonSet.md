@@ -22,12 +22,58 @@ k8s先根据node机器特征，使用其对应框架的weave控制器
 
 ### 示例
 日志收集的业务场景是C/S架构，需要在待收集的机器部署一个客户端应用
+创建一个filebeat的daemonset控制器，它们会和日常需求一样，在每个客户端node节点部署一个filebeat的pod容器
+```
+cat > filebeat-daemonset.yaml <<EOF 
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: filebeat-ds
+  labels:
+    app: filebeat
+spec:
+  selector:
+    matchLabels:
+      app: filebeat
+  template:
+    metadata:
+      labels:
+        app: filebeat
+    spec:
+      containers:
+      - name: filebeat
+        image: prima/filebeat:6.4.2
+        env:
+        - name: REDIS_HOST
+          value: test.com:6379
+        - name: LOG_LEVEL
+          value: info
+EOF
+```
 
+查看ds部署情况:
+> kubectl get ds        
+```
+NAME          DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+filebeat-ds   1         1         0       1            0           <none>          10m
+```
 
+查看filebeat的pod落在node情况
+> kubectl get pod --all-namespaces -o wide      
+```
+NAMESPACE     NAME                                READY   STATUS             RESTARTS   AGE     IP               NODE        NOMINATED NODE   READINESS GATES
+default       filebeat-ds-wplqs                   0/1     CrashLoopBackOff   7          12m     10.32.0.6        cangqiong   <none>           <none>
+```
 
+注:因是演示，故filebeat的Pod有误，这个可以忽视
+> kubectl logs -f filebeat-ds-wplqs     
+```
+Exiting: error loading config file: stat filebeat.yml: no such file or directory
+```
 
-
-
+### 补充
+资源的部署创建始终没有在master节点上调度，原因如下：
+master节点上有Taints污点(NoScheduler),故未定义容忍度的资源是不会调度上来的
 
 
 
