@@ -151,3 +151,6 @@ https://blog.csdn.net/hjxzb/article/details/82725986
 
 minikube 运行 dashboard，并对外暴露访问地址:
 https://www.jianshu.com/p/ef020fa8ca97
+
+去除污染容忍度:
+> kubectl taint nodes --all node-role.kubernetes.io/master-     
