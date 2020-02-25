@@ -151,7 +151,7 @@ spec:
     ports:
     - name: http
       containerPort: 80
-    lifecycle:
+    lifecycle:      
       postStart:
         exec:
           command:
@@ -169,6 +169,13 @@ spec:
       timeoutSeconds: 2         # 超时时间为2s
 EOF
 ```
+补充:     
+创建资源对象时，可以使用lifecycle来管理容器在运行前和关闭前的一些动作。
+> lifecycle有两种回调函数：     
+> 1.PostStart：容器创建成功后，运行前的任务，用于资源部署、环境准备等;        
+> 2.PreStop：在容器被终止前的任务，用于优雅关闭应用程序、通知其他系统等等;     
+> 示例详见:https://blog.csdn.net/liyingke112/article/details/78123945   
+> https://www.cnblogs.com/breezey/p/9233344.html
 
 Ⅱ.readiness
 > 就绪状态检查，没有重启pod的权利，用于为service流量分发，集群预热作为依据
