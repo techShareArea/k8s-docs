@@ -1,6 +1,8 @@
-# k8s-docs
+## k8s-docs
 k8s基本使用及其服务应用
 
+### 参考k8s部署文档
+https://github.com/easzlab/kubeasz
 
 #### k8s常见问题集锦
 https://cloud.tencent.com/document/product/457/8187
