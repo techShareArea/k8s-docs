@@ -164,4 +164,5 @@ b.sync resources across clusters
 > https://blog.51cto.com/14154700/2452179           
 > https://blog.csdn.net/huakai_sun/article/details/82378856         
 > https://www.cnblogs.com/uglyliu/p/11743021.html       
->   
+> http://yaoguais.github.io/article/golang/k8sinterview.html        
+> http://www.matools.com/blog/190777461         
