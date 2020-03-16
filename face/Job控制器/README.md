@@ -7,7 +7,7 @@ job控制器负责批量处理短暂的一次性任务，即仅执行一次的�
 
 ### 核心配置
 ```
-restartPolicyL
+restartPolicy:
   "OnFailure"   #失败就重启
   "Never"       #就算失败也不重启
 ```
