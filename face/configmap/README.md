@@ -30,14 +30,14 @@ spec:
         configMapKeyRef:        #从configmap中读取
           key: redis_host       #上面我们定义的变量名     
 ```
-be
+
 注:具体字段配置，请查阅:
 > kubectl explain pod.spec.containers.env.name.valueFrom.configMapKeyRef        
 
 Ⅱ.--from-file       
 从目录读取的好处:允许你更好的进行配置文件的管理        
 > kubectl create configmap nginx-cfg -n config --from-file=/root/mainfast/conf.d/       
-> --from-file指明需要从哪个目录下面读取，目录下的文件只要按照一档格式就可以成功加载        
+> --from-file指明需要从哪个目录下面读取，目录下的文件只要按照格式就可以成功加载        
 
 注:      
 > 通过目录加载configMap,其变量名是文件名，变量值是文件内容     
