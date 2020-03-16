@@ -33,7 +33,7 @@ Label不是唯一的，很多object可能有相同的label。
 
 Label selector有两种类型：
 1. equality-based：可以使用=、==、!=操作符，可以使用逗号分隔多个表达式
-2. set-based：可以使用in、notin、!操作符，另外还可以没有操作符，直接写出某个label的key，表示过滤有某个key的object而不管该key的value是何值，!表示没有该label的object
+2. set-based：可以使用in、not in、!操作符，另外还可以没有操作符，直接写出某个label的key，表示过滤有某个key的object而不管该key的value是何值，!表示没有该label的object
 
 示例:
 > $ kubectl get pods -l environment=production,tier=frontend    
@@ -80,7 +80,7 @@ selector:
 ```
 
 #### 命令使用
-查看master/node服务器的node
+查看master/node服务器的label标签
 > kubectl get nodes --show-labels
 
 给master/node打label标签
