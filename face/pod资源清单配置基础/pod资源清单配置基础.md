@@ -65,17 +65,18 @@ spec:
 > apiVersion定义的是调用哪个核心群组的api        
 > kind定义我们需要声明的是哪一类资源       
 > metadata为元数据      
-> spec为我们期望的状态，其中第一了镜像名称和镜像地址   
+> spec为我们期望的状态，其中定义了镜像名称和镜像地址   
 
 另注:可通过如下命令查看containers的配置方法
 > kubectl explain pods.spec.containers          
 
 ### 三种网络代理方式
-k8s提供了3中方式将集群内的服务暴露到集群外
-1. service： 申明nodeport类型，可以通过任意节点访问；
-2. hostPort: 直接将容器的端口于所调度的节点上端口路由，这样用户就可以通过宿主机的ip来访问pod；
-3. hostNetwork: 共享宿主机的网络名称空间        
-
+k8s提供了3中方式将集群内的服务暴露到集群外     
+```
+1. service： 申明nodeport类型，可以通过任意节点访问；        
+2. hostPort: 直接将容器的端口于所调度的节点上端口路由，这样用户就可以通过宿主机的ip来访问pod；        
+3. hostNetwork: 共享宿主机的网络名称空间                
+```
 
 
 
