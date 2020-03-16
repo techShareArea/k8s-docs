@@ -23,7 +23,7 @@
 1. 首先，创建一个RS控制器，版本为V2;
 2. 接着将旧控制器的pod陆续下线，同时新的RS控制器通途上线对应Pod;
 3. Pod更新完成后，弃用旧的RS控制器，滚动发布就此完成。
-> 可以另起一个终端，使用kubectl get pod -o wide -w观察pod关东更新情况，使用kubectl get rs -o wide观察RS控制器的名字，状态等信息。也可以使用pause命令实现基于deployment的金丝雀发布策略。
+> 可以另起一个终端，使用kubectl get pod -o wide -w观察pod的更新情况，使用kubectl get rs -o wide观察RS控制器的名字，状态等信息。也可以使用pause命令实现基于deployment的金丝雀发布策略。
 
 #### 滚动发布和回滚实战
 示例如下，给定了滚动策略: 最多新增一个(maxSurge)和最少下线一个(maxUnavailable)
