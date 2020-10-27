@@ -53,5 +53,6 @@ EOF
 > https://kubernetes.io/zh/docs/concepts/services-networking/service/#%E5%AE%9A%E4%B9%89-service    
 
 #### 延伸
-lvs是负载均衡器(k8s自带ipvs,1.11版本后)，能承载数以百万/千万计的并发量
+lvs是负载均衡器(k8s自带ipvs,1.11版本后)，能承载数以百万/千万计的并发量    
+
 eg:阿里云基于lvs实现slb(四层),基于nginx实现(七层)tengent       
