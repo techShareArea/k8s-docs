@@ -42,8 +42,8 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 3306          # 容器端口
-    targetPort: 3306    # 对外暴露服务端口
+  - port: 3306          # 对外暴露服务端口
+    targetPort: 3306    # 容器端口
   selector:
     app: mysql-cjtlis
 EOF
