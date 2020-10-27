@@ -11,8 +11,6 @@ Ingress公开了从集群外部到集群内services的HTTP和HTTPS路由。流�
 ```
 可以将Ingress配置为提供服务外部可访问的URL、负载均衡流量、终止 SSL/TLS并提供基于名称的虚拟主机。Ingress控制器通常负责通过负载均衡器来实现 Ingress尽管它也可以配置边缘路由器或其他前端来帮助处理流量。
 Ingress会公开任意端口或协议。将HTTP和HTTPS以外的服务公开到Internet时，通常使用Service.Type=NodePort或者Service.Type=LoadBalancer类型的服务。
-可以将Ingress配置为提供服务外部可访问的URL，负载均衡流量，终止SSL/TLS并提供基于名称的虚拟主机。 Ingress 控制器通常负责通过负载平衡器来实现入口，尽管它也可以配置边缘路由器或其他前端以帮助处理流量。
-Ingress不会公开任意端口或协议。将HTTP和HTTPS以外的服务公开给Internet时，通常使用以下类型的服务Service.Type=NodePort或者Service.Type=LoadBalancer
 
 #### 准备
 您必须具有ingress控制器才能满足Ingress的要求。仅创建Ingress资源无效。
@@ -28,7 +26,7 @@ metadata:
     namespace: dev
 spec:
     rules:
-    - host: dev-xxx-api.ecaicn.com
+    - host: dev-xxx-api.xxx.com
       http:
         paths:
         - backend:
@@ -36,8 +34,8 @@ spec:
              servicePort: 8080
     tls:
       - hosts:
-        - "*.ecaicn.com"
-        secretName: tls-ecaicn-com
+        - "*.xxx.com"
+        secretName: tls-xxx-com
 EOF
 ```
 注:ingress需要配合ingress控制器使用
